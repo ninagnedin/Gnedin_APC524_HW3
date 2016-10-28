@@ -31,14 +31,6 @@ class TestNewton(unittest.TestCase):
         x=solver.solve(0) 
         self.assertAlmostEqual(x,-1)
     
-    #Test for function of two variables - will find root in direction x given y0
-    def testTwoParams(self):
-        f=lambda x,y:x**2-y
-        solver=newton.Newton(f,tol=1.e-15,maxiter=100)
-        y0=2
-        x=solver.solve(1,y0)
-        self.assertAlmostEqual(f(x,y0),0)
-    
     #Test radius works - this test should fail
     def testRadius(self):
         #P=(x-2)**2=x*2-4x+4
@@ -48,7 +40,42 @@ class TestNewton(unittest.TestCase):
         x=solver.solve(45)
         print(x)
         self.assertAlmostEqual(x,2)
-        
+    
+    #Function with two parameters - using analytic Jacobian
+    def testTwoParamsAnalytic(self):
+        f= lambda x: N.matrix([[2*x[0,0]-6*x[1,0]],[ x[0,0]+x[1,0]-8]])
+        _Df= lambda x: N.matrix([[2, -6],[1, 1]])
+        solver = newton.Newton(f, tol=1.e-6, maxiter=100, Df=_Df)
+        x0=N.matrix([[7.],[0.]])
+        x = solver.solve(x0)
+        N.testing.assert_array_almost_equal(x, N.matrix([[6.], [2.]]))
+    
+    #Same function with two parameters as above - using approximate Jacobian
+    def testTwoParamsApprox(self):
+        f= lambda x: N.matrix([[2*x[0,0]-6*x[1,0]],[ x[0,0]+x[1,0]-8]])
+        solver = newton.Newton(f, tol=1.e-6, maxiter=100)
+        x0=N.matrix([[7.],[0.]])
+        x = solver.solve(x0)
+        N.testing.assert_array_almost_equal(x, N.matrix([[6.], [2.]]))
+      
+    #Function with three parameters - using analytic Jacobian     
+    def testThreeParamsAnalytic(self):
+        f= lambda x: N.matrix([[2*x[0,0]-6*x[1,0]+x[2,0]],[ x[0,0]+x[1,0]+x[2,0]-8],[x[0,0]-12*x[1,0]+12*x[2,0]+18]])
+        _Df= lambda x: N.matrix([[2, -6,1],[1, 1,1],[1.,-12.,12.]])
+        solver = newton.Newton(f, tol=1.e-6, maxiter=100, Df=_Df)
+        x0=N.matrix([[7.],[0.],[2.]])
+        x = solver.solve(x0)
+        N.testing.assert_array_almost_equal(x, N.matrix([[6.], [2.],[0.]]))
+
+    #Same function with two parameters as above - using approximate Jacobian        
+    def testThreeParamsApprox(self):
+        f= lambda x: N.matrix([[2*x[0,0]-6*x[1,0]+x[2,0]],[ x[0,0]+x[1,0]+x[2,0]-8],[x[0,0]-12*x[1,0]+12*x[2,0]+18]])
+        solver = newton.Newton(f, tol=1.e-6, maxiter=100)
+        x0=N.matrix([[7.],[0.],[2.]])
+        x = solver.solve(x0)
+        N.testing.assert_array_almost_equal(x, N.matrix([[6.], [2.],[0.]]))
+    
+    #Tests that step of Newton behaves as it should
     def testNewtonStep(self):
         f = lambda x : math.sin(x)
         x0=2

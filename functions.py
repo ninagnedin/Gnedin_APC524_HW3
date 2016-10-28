@@ -1,28 +1,21 @@
 import numpy as N
 
-def ApproximateJacobian(f, x, dx,y0=None): #dx was hardcoded here but test functions pass as input
+def ApproximateJacobian(f, x, dx): #dx was hardcoded here but test functions pass as input
     """Return an approximation of the Jacobian Df(x) as a numpy matrix"""
     try:
         n = len(x)
     except TypeError:
         n = 1
-    if y0 is not None:
-        fx=f(x,y0)
-    else:
-        fx = f(x)
+    fx = f(x)
     Df_x = N.matrix(N.zeros((n,n)))
     for i in range(n):
         v = N.matrix(N.zeros((n,1)))
         v[i,0] = dx
-        if y0 is not None:
-            Df_x[:,i] = (f(x + v,y0) - fx)/dx
-        else:
-            Df_x[:,i] = (f(x + v) - fx)/dx #Adding /dx - Jacobian is change in y over change in x
+        Df_x[:,i] = (f(x + v) - fx)/dx #Adding /dx - Jacobian is change in y over change in x
     return Df_x
 
 def AnalyticJacobian(f,x):
-    Df_x=f(x)
-    return Df_x
+    return f(x)
 
 class Polynomial(object):
     """Callable polynomial object.
