@@ -32,9 +32,15 @@ testQuad: To test quadratic with single root
 
 testQuad2: To test a quadratic with no roots - should fail
 
-testTwoParams: To test function with two parameters
+testRadius: To test the radius exception - should fail
 
-testRadis: To test the radius exception - should fail
+testTwoParamsAnalytic: To test function of two parameters using analytic Jacobian
+
+testTwoParamsApprox: To test function of two parameters using approx Jacobian
+
+testThreeParamsAnalytic: To test function of three parameters using analytic Jacobian
+
+testThreeParamsApprox: To test function of three parameters using approx Jacobian
 
 testNewtonStep: Testing that a single step of Newton performs correctly
 
